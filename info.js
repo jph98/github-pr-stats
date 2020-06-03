@@ -17,6 +17,8 @@ const octo = new Octokit({
   auth: config.apikey
 });
 
+const REPO = `https://github.com/${config.org}/${config.repo}/pull/`
+
 const format_day_time = async(openedFor) => {
   return openedFor.days() + ' days ' + openedFor.hours() + 'hrs ' + openedFor.minutes() + 'mins '
 };
@@ -42,7 +44,7 @@ const format_pr = async(req) => {
   const end = moment(req.updated_at);    
   const openedFor = moment.duration(end.diff(start));    
   return {
-    'url': `https://github.com/insurestreetltd/canopy-backend/pull/${req.number}`,
+    'url': `${REPO}${req.number}`,
     'user': req.user.login,
     'assignee': _.get(req, 'req.assignee.login', 'none'),
     'title': req.title,
@@ -149,7 +151,7 @@ const display_open_pull_requests = async(repo) => {
   const requests = await getOpenPullRequests(config.org, repo)      
   
   var table = new Table({
-    head: ['User'.white, 'Assignee'.white, 'Title'.white, 'Opened For'.white], 
+    head: ['User'.white, 'Title'.white, 'Opened For'.white], 
     colWidths: [20, 60, 30]
   });
   // requests.map(async(req) => {  
@@ -157,8 +159,8 @@ const display_open_pull_requests = async(repo) => {
     const pr = await format_pr(requests[req]);
     const openedFor = moment.duration(pr.opened_for_raw);      
 
-    if (DEBUG) console.log(pr);
-    if (openedFor.days() >= 1) {
+    if (DEBUG) console.log(pr);    
+    if (openedFor.days() >= 1) {      
       table.push([pr.user.red, pr.title.substring(0, 50).red, pr.opened_for.red]);
     } else {
       table.push([pr.user.green, pr.title.green.substring(0, 50), pr.opened_for.green]);
