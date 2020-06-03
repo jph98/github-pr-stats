@@ -4,7 +4,7 @@ Github Pull Request Stats Y'All
 
 Generate stats for the last 14 days (or whatever):
 
-![PR Stats](./pr-stats.png)
+![PR Stats](./pr-all-stats.png)
 
 Generate stats regarding open pull requests:
 
